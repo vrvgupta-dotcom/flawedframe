@@ -168,7 +168,7 @@ function Nav() {
         </a>
         <div className="nav-links">
           <a href="#series-1">Current</a>
-          <a href="#archive">Archive</a>
+          <a href="archive.html">Archive</a>
           <a href="#series-1">Collect</a>
         </div>
       </div>
@@ -306,7 +306,7 @@ function ArchiveBar() {
     <section className="archive" id="archive">
       <div className="wrap archive-inner">
         <div className="archive-text">6 series archived. 36 pieces gone forever.</div>
-        <a className="archive-link" href="#archive">View archive →</a>
+        <a className="archive-link" href="archive.html">View archive →</a>
       </div>
     </section>
   );
