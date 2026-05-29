@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Flawed Frame — Order Secured</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Outfit:wght@300;400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0b09;
+    --card: #1c1a16;
+    --ink: #f0ede8;
+    --ink-50: rgba(240,237,232,0.50);
+    --ink-45: rgba(240,237,232,0.45);
+    --ink-40: rgba(240,237,232,0.40);
+    --ink-35: rgba(240,237,232,0.35);
+    --ink-30: rgba(240,237,232,0.30);
+    --ink-25: rgba(240,237,232,0.25);
+    --ink-20: rgba(240,237,232,0.20);
+    --ink-18: rgba(240,237,232,0.18);
+    --ink-15: rgba(240,237,232,0.15);
+    --ink-12: rgba(240,237,232,0.12);
+    --ink-10: rgba(240,237,232,0.10);
+    --ink-08: rgba(240,237,232,0.08);
+    --ink-06: rgba(240,237,232,0.06);
+    --gold: #c9a84c;
+    --gold-line: rgba(201,168,76,0.40);
+    --display: "Cormorant Garamond", "EB Garamond", Georgia, serif;
+    --sans: "Outfit", "Helvetica Neue", Arial, sans-serif;
+    --mono: "DM Mono", ui-monospace, "SFMono-Regular", monospace;
+    --ease: cubic-bezier(.2,.7,.2,1);
+  }
+  * { box-sizing: border-box; }
+  html, body { background: var(--bg); color: var(--ink); margin: 0; padding: 0; }
+  body {
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection { background: rgba(201,168,76,0.30); color: var(--ink); }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; padding: 0; }
+  img { display: block; max-width: 100%; }
+
+  .wrap { width: 100%; max-width: 1320px; margin: 0 auto; padding: 0 56px; }
+  @media (max-width: 800px) { .wrap { padding: 0 22px; } }
+
+  /* ---------- NAV ---------- */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(11,11,9,0.92);
+    backdrop-filter: blur(12px) saturate(120%);
+    -webkit-backdrop-filter: blur(12px) saturate(120%);
+    border-bottom: 0.5px solid var(--ink-12);
+    height: 72px;
+  }
+  .nav-inner {
+    height: 100%;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 56px;
+  }
+  @media (max-width: 800px) { .nav-inner { padding: 0 22px; } }
+  .nav-logo {
+    height: 36px; width: auto; display: block;
+    opacity: 0.92;
+  }
+  .nav-right {
+    display: flex; align-items: center; gap: 36px;
+  }
+  .nav-links {
+    display: flex; gap: 32px;
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .nav-links a { opacity: 0.5; transition: opacity 200ms ease; }
+  .nav-links a:hover { opacity: 1; }
+  .nav-avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 0.5px solid var(--ink-20);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.10em;
+    color: var(--ink);
+    opacity: 0.75;
+    transition: opacity 200ms ease, border-color 200ms ease;
+    cursor: pointer;
+    background: transparent;
+  }
+  .nav-avatar:hover { opacity: 1; border-color: var(--ink-35); }
+  @media (max-width: 540px) {
+    .nav-links { gap: 18px; }
+    .nav-logo { height: 28px; }
+    .nav-right { gap: 22px; }
+  }
+
+  /* ---------- PAGE ENTRY ---------- */
+  .confirm-stage {
+    min-height: 100vh;
+    padding: 120px 0 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .confirm {
+    width: 100%;
+    max-width: 560px;
+    margin: 0 auto;
+    text-align: left;
+    opacity: 0;
+    transform: translateY(16px);
+    animation: fadeUp 800ms var(--ease) forwards;
+  }
+  @keyframes fadeUp { to { opacity: 1; transform: none; } }
+
+  /* ---------- HEAD ---------- */
+  .gold-line {
+    width: 48px; height: 0;
+    border-top: 0.5px solid var(--gold-line);
+    margin: 0 auto;
+  }
+  .gold-line.top { margin-bottom: 40px; }
+  .gold-line.bottom { margin-top: 52px; }
+
+  .heading {
+    font-family: var(--display);
+    font-weight: 300;
+    font-size: 52px;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    text-align: center;
+    margin: 0;
+    color: var(--ink);
+  }
+  .sub {
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 1.9;
+    text-align: center;
+    margin: 16px auto 0;
+    max-width: 400px;
+    color: var(--ink);
+    opacity: 0.50;
+  }
+
+  /* ---------- SUMMARY ---------- */
+  .summary {
+    margin-top: 52px;
+    background: var(--card);
+    border: 0.5px solid var(--ink-08);
+    border-radius: 2px;
+    padding: 28px 32px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 24px;
+    align-items: stretch;
+  }
+  .sum-left { min-width: 0; }
+  .sum-right {
+    text-align: right;
+    display: flex; flex-direction: column; justify-content: center;
+    gap: 4px;
+  }
+  .eyebrow {
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 9px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink);
+    opacity: 0.25;
+    margin: 0 0 10px;
+  }
+  .piece-title {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: 28px;
+    line-height: 1.1;
+    letter-spacing: 0;
+    margin: 0;
+    color: var(--ink);
+  }
+  .edition {
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin: 4px 0 0;
+    color: var(--ink);
+    opacity: 0.30;
+  }
+  .inscription {
+    font-family: var(--mono);
+    font-weight: 300;
+    font-style: italic;
+    font-size: 11px;
+    letter-spacing: 0.02em;
+    margin: 12px 0 0;
+    color: var(--ink);
+    opacity: 0.35;
+  }
+  .order-no {
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    margin: 16px 0 0;
+    color: var(--ink);
+    opacity: 0.20;
+  }
+  .price {
+    font-family: var(--display);
+    font-weight: 300;
+    font-size: 32px;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .pay-method {
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 10px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--ink);
+    opacity: 0.25;
+  }
+
+  /* ---------- NEXT ---------- */
+  .next {
+    margin-top: 48px;
+  }
+  .next-label {
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink);
+    opacity: 0.25;
+    margin: 0 0 28px;
+  }
+  .step {
+    display: grid;
+    grid-template-columns: 24px 1fr;
+    gap: 20px;
+    align-items: start;
+    padding: 18px 0;
+    border-bottom: 0.5px solid var(--ink-06);
+  }
+  .step:last-child { border-bottom: 0; }
+  .step-n {
+    font-family: var(--mono);
+    font-weight: 300;
+    font-size: 12px;
+    color: var(--ink);
+    opacity: 0.20;
+    padding-top: 2px;
+    letter-spacing: 0.04em;
+  }
+  .step-title {
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+  .step-body {
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 13px;
+    line-height: 1.75;
+    margin-top: 3px;
+    color: var(--ink);
+    opacity: 0.45;
+  }
+
+  /* ---------- ACTIONS ---------- */
+  .actions {
+    margin-top: 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .btn {
+    height: 48px;
+    border-radius: 2px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink);
+    transition: border-color 220ms ease, opacity 220ms ease, background 220ms ease;
+    cursor: pointer;
+    width: 100%;
+  }
+  .btn.primary {
+    background: rgba(240,237,232,0.06);
+    border: 0.5px solid var(--ink-20);
+  }
+  .btn.primary:hover { border-color: var(--ink-40); }
+  .btn.secondary {
+    background: transparent;
+    border: 0.5px solid var(--ink-10);
+    opacity: 0.40;
+  }
+  .btn.secondary:hover { opacity: 0.70; }
+
+  /* ---------- CONTACT ---------- */
+  .contact {
+    margin-top: 32px;
+    text-align: center;
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 12px;
+    color: var(--ink);
+    opacity: 0.25;
+  }
+  .contact a {
+    opacity: 1;
+    color: rgba(240,237,232,0.40);
+    border-bottom: 0.5px solid var(--ink-15);
+    padding-bottom: 1px;
+    margin-left: 2px;
+    transition: opacity 200ms ease, color 200ms ease, border-color 200ms ease;
+  }
+  .contact a:hover { color: var(--ink); border-bottom-color: var(--ink-30); }
+
+  /* ---------- FOOTER ---------- */
+  footer { padding: 60px 0 28px; }
+  .foot-top {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 32px; flex-wrap: wrap;
+    padding-bottom: 32px;
+    border-bottom: 0.5px solid var(--ink-08);
+  }
+  .foot-brand { line-height: 1.1; }
+  .foot-brand img { height: 38px; opacity: 0.4; }
+  .foot-brand .tag {
+    margin-top: 8px;
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 10px;
+    letter-spacing: 0.20em;
+    text-transform: uppercase;
+    color: var(--ink);
+    opacity: 0.20;
+  }
+  .foot-links {
+    display: flex; gap: 28px;
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 11px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--ink);
+    opacity: 0.30;
+  }
+  .foot-links a { transition: opacity 200ms ease; }
+  .foot-links a:hover { opacity: 1; color: var(--ink); }
+  .foot-bottom {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 24px; flex-wrap: wrap;
+    padding-top: 20px;
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 11px;
+    color: var(--ink);
+    opacity: 0.18;
+  }
+
+  @media (max-width: 560px) {
+    .summary {
+      grid-template-columns: 1fr;
+      gap: 20px;
+      padding: 24px 22px;
+    }
+    .sum-right { text-align: left; align-items: flex-start; }
+    .heading { font-size: 44px; }
+    .actions { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+  <nav class="nav" data-screen-label="01 Order Confirmation — Nav">
+    <div class="nav-inner">
+      <a href="index.html" aria-label="Flawed Frame — home">
+        <img class="nav-logo" src="assets/logomark.png" alt="Flawed Frame" />
+      </a>
+      <div class="nav-right">
+        <div class="nav-links">
+          <a href="index.html#series-1">Current</a>
+          <a href="archive.html">Archive</a>
+          <a href="index.html#series-1">Collect</a>
+        </div>
+        <button class="nav-avatar" aria-label="Account — E.M." title="E.M.">EM</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="confirm-stage" data-screen-label="Order Confirmation">
+    <section class="confirm wrap" aria-labelledby="confirm-heading">
+
+      <!-- TOP GOLD LINE -->
+      <div class="gold-line top" aria-hidden="true"></div>
+
+      <!-- HEADING -->
+      <h1 id="confirm-heading" class="heading">Secured.</h1>
+      <p class="sub">Your piece has been reserved. It will not be offered again.</p>
+
+      <!-- PIECE SUMMARY -->
+      <div class="summary" role="group" aria-label="Order summary">
+        <div class="sum-left">
+          <p class="eyebrow">Access Series</p>
+          <h2 class="piece-title">Horizon Ramp</h2>
+          <p class="edition">3 of 3 · Copy 2</p>
+          <p class="inscription">this way out.</p>
+          <p class="order-no">Order FF-2025-0051</p>
+        </div>
+        <div class="sum-right">
+          <div class="price">$680</div>
+          <div class="pay-method">Paid via PayPal</div>
+        </div>
+      </div>
+
+      <!-- WHAT HAPPENS NEXT -->
+      <div class="next">
+        <p class="next-label">What happens next</p>
+
+        <div class="step">
+          <div class="step-n">01</div>
+          <div>
+            <div class="step-title">Confirmation email sent</div>
+            <div class="step-body">A confirmation has been sent to your email address. This is your record of purchase — keep it.</div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-n">02</div>
+          <div>
+            <div class="step-title">Your piece is being prepared</div>
+            <div class="step-body">It will be inspected, handwritten, and packed within seven days. You will be notified when it ships.</div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-n">03</div>
+          <div>
+            <div class="step-title">Tracking details</div>
+            <div class="step-body">A shipping notification with your carrier and tracking number will arrive by email. You can also track your order in your account.</div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-n">04</div>
+          <div>
+            <div class="step-title">Delivery</div>
+            <div class="step-body">Your piece will arrive within 14 days of collection. Framed and insured. If anything is wrong, email us.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACTIONS -->
+      <div class="actions">
+        <a class="btn primary" href="account.html">View my account</a>
+        <a class="btn secondary" href="index.html">Return to gallery</a>
+      </div>
+
+      <!-- CONTACT -->
+      <p class="contact">
+        Questions about your order —
+        <a href="mailto:collect@flawedframe.com">collect@flawedframe.com</a>
+      </p>
+
+      <!-- BOTTOM GOLD LINE -->
+      <div class="gold-line bottom" aria-hidden="true"></div>
+
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap">
+      <div class="foot-top">
+        <div class="foot-brand">
+          <img src="assets/logomark.png" alt="Flawed Frame" />
+          <div class="tag">Imperfection. Preserved.</div>
+        </div>
+        <div class="foot-links">
+          <a href="archive.html">Archive</a>
+          <a href="index.html#series-1">Collect</a>
+          <a href="#">Instagram</a>
+        </div>
+      </div>
+      <div class="foot-bottom">
+        <div>© 2025 Flawed Frame. All pieces registered. No reprints.</div>
+        <div>International shipping. USD.</div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

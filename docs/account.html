@@ -1,0 +1,969 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Flawed Frame — My Collection</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Outfit:wght@300;400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0b09;
+    --card: #1c1a16;
+    --surface: #242118;
+    --card-hover: #2a2720;
+    --ink: #f0ede8;
+    --ink-70: rgba(240,237,232,0.70);
+    --ink-60: rgba(240,237,232,0.60);
+    --ink-50: rgba(240,237,232,0.50);
+    --ink-45: rgba(240,237,232,0.45);
+    --ink-40: rgba(240,237,232,0.40);
+    --ink-35: rgba(240,237,232,0.35);
+    --ink-30: rgba(240,237,232,0.30);
+    --ink-25: rgba(240,237,232,0.25);
+    --ink-20: rgba(240,237,232,0.20);
+    --ink-18: rgba(240,237,232,0.18);
+    --ink-15: rgba(240,237,232,0.15);
+    --ink-12: rgba(240,237,232,0.12);
+    --ink-10: rgba(240,237,232,0.10);
+    --ink-08: rgba(240,237,232,0.08);
+    --ink-06: rgba(240,237,232,0.06);
+    --gold: #c9a84c;
+    --gold-30: rgba(201,168,76,0.30);
+    --blue: #7eb8d4;
+    --sage: #7dbfa0;
+    --display: "Cormorant Garamond", "EB Garamond", Georgia, serif;
+    --sans: "Outfit", "Helvetica Neue", Arial, sans-serif;
+    --mono: "DM Mono", ui-monospace, "SFMono-Regular", monospace;
+    --ease: cubic-bezier(.2,.7,.2,1);
+    --nav-h: 72px;
+  }
+  * { box-sizing: border-box; }
+  html, body { background: var(--bg); color: var(--ink); margin: 0; padding: 0; }
+  body {
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection { background: rgba(201,168,76,0.30); color: var(--ink); }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; color: inherit; background: none; border: none; cursor: pointer; padding: 0; }
+  img { display: block; max-width: 100%; }
+
+  .wrap { width: 100%; max-width: 1320px; margin: 0 auto; padding: 0 56px; }
+  @media (max-width: 800px) { .wrap { padding: 0 22px; } }
+
+  /* ---------- NAV ---------- */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(11,11,9,0.92);
+    backdrop-filter: blur(12px) saturate(120%);
+    -webkit-backdrop-filter: blur(12px) saturate(120%);
+    border-bottom: 0.5px solid var(--ink-12);
+    height: var(--nav-h);
+  }
+  .nav-inner {
+    height: 100%;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 56px;
+  }
+  @media (max-width: 800px) { .nav-inner { padding: 0 22px; } }
+  .nav-logo {
+    height: 36px; width: auto; display: block;
+    opacity: 0.92;
+  }
+  .nav-right {
+    display: flex; align-items: center; gap: 0;
+  }
+  .nav-links {
+    display: flex; gap: 32px;
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .nav-links a { opacity: 0.5; transition: opacity 200ms ease; }
+  .nav-links a:hover { opacity: 1; }
+  .nav-divider {
+    width: 0;
+    height: 18px;
+    border-left: 0.5px solid var(--ink-15);
+    margin: 0 28px;
+  }
+
+  /* Avatar + dropdown */
+  .avatar-wrap {
+    position: relative;
+  }
+  .nav-avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 0.5px solid var(--ink-20);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+    opacity: 0.70;
+    background: var(--card-hover);
+    transition: opacity 200ms ease, border-color 200ms ease;
+    cursor: pointer;
+    user-select: none;
+  }
+  .nav-avatar:hover { opacity: 1; border-color: var(--ink-35); }
+  .avatar-dropdown {
+    position: absolute; top: calc(100% + 12px); right: 0;
+    min-width: 140px;
+    background: var(--card);
+    border: 0.5px solid var(--ink-12);
+    border-radius: 2px;
+    padding: 6px 0;
+    display: none;
+    z-index: 200;
+  }
+  .avatar-wrap:hover .avatar-dropdown,
+  .avatar-wrap:focus-within .avatar-dropdown { display: block; }
+  .avatar-dropdown a {
+    display: block;
+    padding: 10px 16px;
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--ink);
+    opacity: 0.45;
+    transition: opacity 150ms ease;
+    white-space: nowrap;
+  }
+  .avatar-dropdown a.active { opacity: 1; }
+  .avatar-dropdown a:hover { opacity: 0.85; }
+  @media (max-width: 540px) {
+    .nav-links { gap: 18px; }
+    .nav-logo { height: 28px; }
+    .nav-divider { margin: 0 16px; }
+  }
+
+  /* ---------- PAGE HEADER ---------- */
+  .page-head {
+    padding-top: calc(var(--nav-h) + 60px);
+    padding-bottom: 36px;
+  }
+  .head-inner {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .head-left .eyebrow {
+    display: block;
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink);
+    opacity: 0.30;
+    margin-bottom: 8px;
+  }
+  .head-left h1 {
+    font-family: var(--display);
+    font-weight: 300;
+    font-size: 48px;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    margin: 0;
+    color: var(--ink);
+  }
+  .head-right {
+    text-align: right;
+    line-height: 1;
+    padding-bottom: 6px;
+  }
+  .head-right .member-label {
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 9px;
+    letter-spacing: 0.20em;
+    text-transform: uppercase;
+    color: var(--ink);
+    opacity: 0.25;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .head-right .member-date {
+    font-family: var(--mono);
+    font-weight: 300;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    opacity: 0.50;
+  }
+  .head-divider {
+    height: 0;
+    border-top: 0.5px solid var(--ink-08);
+    margin-top: 32px;
+  }
+
+  /* ---------- SUMMARY STRIP ---------- */
+  .summary-strip {
+    padding: 40px 0;
+  }
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  @media (max-width: 640px) {
+    .metric-grid { grid-template-columns: 1fr; }
+  }
+  .metric-card {
+    background: var(--card);
+    border: 0.5px solid var(--ink-08);
+    border-radius: 2px;
+    padding: 20px 24px;
+  }
+  .metric-label {
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink);
+    opacity: 0.30;
+    display: block;
+    margin-bottom: 14px;
+  }
+  .metric-n {
+    font-family: var(--display);
+    font-weight: 300;
+    font-size: 36px;
+    line-height: 1;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .metric-sub {
+    margin-top: 6px;
+    font-family: var(--mono);
+    font-weight: 300;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: var(--gold);
+    cursor: pointer;
+    display: inline-block;
+    transition: opacity 200ms ease;
+  }
+  .metric-sub:hover { opacity: 0.75; }
+
+  /* ---------- SECTION LABEL ---------- */
+  .section-label {
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink);
+    opacity: 0.30;
+    display: block;
+    margin-bottom: 32px;
+  }
+
+  /* ---------- MY COLLECTION ---------- */
+  .collection { padding-bottom: 64px; }
+  .collection-cards { display: flex; flex-direction: column; gap: 12px; }
+
+  .col-card {
+    background: var(--card);
+    border: 0.5px solid var(--ink-08);
+    border-radius: 2px;
+    height: 140px;
+    display: flex;
+    overflow: hidden;
+  }
+  .col-img {
+    width: 180px;
+    min-width: 180px;
+    background: var(--card-hover);
+    flex-shrink: 0;
+  }
+  @media (max-width: 640px) {
+    .col-img { width: 100px; min-width: 100px; }
+  }
+  .col-details {
+    flex: 1;
+    padding: 20px 28px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: 0;
+  }
+  .col-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .col-series {
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink);
+    opacity: 0.30;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .col-title {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 1.1;
+    letter-spacing: 0;
+    margin: 0;
+    color: var(--ink);
+  }
+  .badge {
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 9px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    padding: 5px 9px;
+    border: 0.5px solid currentColor;
+    color: var(--gold);
+    line-height: 1;
+    border-radius: 2px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .badge.blue { color: var(--blue); }
+  .badge.sage { color: var(--sage); }
+  .badge.gold { color: var(--gold); }
+
+  .col-middle {
+    font-family: var(--mono);
+    font-weight: 300;
+    font-style: italic;
+    font-size: 11px;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+    opacity: 0.35;
+  }
+  .col-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 12px;
+  }
+  .col-price {
+    font-family: var(--mono);
+    font-weight: 300;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+    opacity: 0.50;
+    display: block;
+  }
+  .col-date {
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 11px;
+    color: var(--ink);
+    opacity: 0.25;
+    margin-top: 2px;
+    display: block;
+  }
+  .cert-link {
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 10px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--gold);
+    border-bottom: 0.5px solid rgba(201,168,76,0.30);
+    padding-bottom: 1px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 200ms ease;
+    flex-shrink: 0;
+  }
+  .cert-link:hover { opacity: 0.70; }
+
+  /* ---------- ORDER STATUS ---------- */
+  .orders { padding-bottom: 64px; }
+  .order-cards { display: flex; flex-direction: column; gap: 12px; }
+
+  .order-card {
+    background: var(--card);
+    border: 0.5px solid var(--ink-08);
+    border-radius: 2px;
+    padding: 24px 28px;
+  }
+  .order-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .order-title {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 1.2;
+    margin: 0;
+    color: var(--ink);
+  }
+  .order-num {
+    font-family: var(--mono);
+    font-weight: 300;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    opacity: 0.25;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* Timeline */
+  .timeline {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    position: relative;
+    margin-bottom: 0;
+  }
+  .timeline-track {
+    position: absolute;
+    top: 4px;
+    left: 12.5%;
+    right: 12.5%;
+    height: 0;
+    pointer-events: none;
+  }
+  .timeline-track-seg {
+    position: absolute;
+    top: 0;
+    height: 0;
+    border-top: 0.5px solid;
+  }
+
+  .t-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+  .t-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    flex-shrink: 0;
+  }
+  .t-dot.done {
+    background: var(--gold);
+    border: none;
+  }
+  .t-dot.current {
+    background: var(--gold);
+    border: none;
+    animation: dotPulse 2s ease-in-out infinite;
+  }
+  @keyframes dotPulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+  .t-dot.upcoming {
+    background: transparent;
+    border: 0.5px solid var(--ink-20);
+  }
+  .t-label {
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink);
+    opacity: 0.60;
+    text-align: center;
+    line-height: 1.3;
+    white-space: nowrap;
+  }
+  .t-label.upcoming { opacity: 0.20; }
+  .t-now {
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 9px;
+    letter-spacing: 0.08em;
+    color: var(--sage);
+    margin-top: 4px;
+    display: block;
+    text-align: center;
+  }
+  .tracking-row {
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 0.5px solid var(--ink-06);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .tracking-carrier {
+    font-family: var(--mono);
+    font-weight: 300;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    opacity: 0.50;
+  }
+  .tracking-link {
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--gold);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+    transition: opacity 200ms ease;
+    white-space: nowrap;
+  }
+  .tracking-link:hover { opacity: 0.70; }
+  .tracking-pending {
+    font-family: var(--sans);
+    font-style: italic;
+    font-weight: 300;
+    font-size: 11px;
+    color: var(--ink);
+    opacity: 0.30;
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 0.5px solid var(--ink-06);
+  }
+
+  /* ---------- CERTIFICATES ---------- */
+  .certs { padding-bottom: 80px; }
+  .cert-rows { display: flex; flex-direction: column; }
+  .cert-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 18px 0;
+    border-bottom: 0.5px solid var(--ink-06);
+  }
+  .cert-row:last-child { border-bottom: 0; }
+  .cert-piece-title {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: 17px;
+    line-height: 1.2;
+    color: var(--ink);
+    margin: 0 0 4px;
+  }
+  .cert-sub {
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 11px;
+    color: var(--ink);
+    opacity: 0.35;
+    display: block;
+  }
+  .cert-destruction {
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 10px;
+    color: var(--sage);
+    opacity: 0.60;
+    display: block;
+    margin-top: 3px;
+  }
+  .cert-download {
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 10px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--ink);
+    opacity: 0.50;
+    border-bottom: 0.5px solid var(--ink-20);
+    padding-bottom: 1px;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: opacity 200ms ease;
+  }
+  .cert-download:hover { opacity: 1; }
+
+  /* ---------- FOOTER ---------- */
+  footer { padding: 60px 0 28px; }
+  .foot-top {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 32px; flex-wrap: wrap;
+    padding-bottom: 32px;
+    border-bottom: 0.5px solid var(--ink-08);
+  }
+  .foot-brand { line-height: 1.1; }
+  .foot-brand img { height: 38px; opacity: 0.4; }
+  .foot-brand .tag {
+    margin-top: 8px;
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 10px;
+    letter-spacing: 0.20em;
+    text-transform: uppercase;
+    color: var(--ink);
+    opacity: 0.20;
+  }
+  .foot-links {
+    display: flex; gap: 28px;
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 11px;
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    color: var(--ink);
+    opacity: 0.30;
+  }
+  .foot-links a { transition: opacity 200ms ease; }
+  .foot-links a:hover { opacity: 1; color: var(--ink); }
+  .foot-bottom {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 24px; flex-wrap: wrap;
+    padding-top: 20px;
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 11px;
+    color: var(--ink);
+    opacity: 0.18;
+  }
+</style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="index.html" aria-label="Flawed Frame — home">
+        <img class="nav-logo" src="assets/logomark.png" alt="Flawed Frame" />
+      </a>
+      <div class="nav-right">
+        <div class="nav-links">
+          <a href="index.html#series-1">Current</a>
+          <a href="archive.html">Archive</a>
+          <a href="index.html#series-1">Collect</a>
+        </div>
+        <div class="nav-divider" aria-hidden="true"></div>
+        <div class="avatar-wrap">
+          <button class="nav-avatar" aria-label="Account — James Mitchell" aria-haspopup="true">JM</button>
+          <div class="avatar-dropdown" role="menu">
+            <a href="account.html" class="active" role="menuitem">My Collection</a>
+            <a href="#" role="menuitem">Sign out</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <header class="page-head">
+    <div class="wrap">
+      <div class="head-inner">
+        <div class="head-left">
+          <span class="eyebrow">Collector account</span>
+          <h1>James Mitchell</h1>
+        </div>
+        <div class="head-right">
+          <span class="member-label">Member since</span>
+          <span class="member-date">January 2025</span>
+        </div>
+      </div>
+      <div class="head-divider"></div>
+    </div>
+  </header>
+
+  <!-- SUMMARY STRIP -->
+  <section class="summary-strip">
+    <div class="wrap">
+      <div class="metric-grid">
+        <div class="metric-card">
+          <span class="metric-label">Pieces collected</span>
+          <div class="metric-n">3</div>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label">Total invested</span>
+          <div class="metric-n">$6,180</div>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label">Certificates</span>
+          <div class="metric-n">3 available</div>
+          <div class="metric-sub">↓ Download all</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MY COLLECTION -->
+  <section class="collection">
+    <div class="wrap">
+      <span class="section-label">My collection</span>
+      <div class="collection-cards">
+
+        <!-- Card 1: Summit Reserved -->
+        <div class="col-card">
+          <div class="col-img" aria-hidden="true"></div>
+          <div class="col-details">
+            <div class="col-top">
+              <div>
+                <span class="col-series">Access Series</span>
+                <h3 class="col-title">Summit Reserved</h3>
+              </div>
+              <span class="badge gold">1 of 1</span>
+            </div>
+            <div class="col-middle">"still reserved."</div>
+            <div class="col-bottom">
+              <div>
+                <span class="col-price">Collected for $2,400</span>
+                <span class="col-date">14 January 2025</span>
+              </div>
+              <a class="cert-link" href="#">↓ Certificate</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Horizon Ramp -->
+        <div class="col-card">
+          <div class="col-img" aria-hidden="true"></div>
+          <div class="col-details">
+            <div class="col-top">
+              <div>
+                <span class="col-series">Access Series · Copy 2</span>
+                <h3 class="col-title">Horizon Ramp</h3>
+              </div>
+              <span class="badge blue">3 of 3</span>
+            </div>
+            <div class="col-middle">"this way out."</div>
+            <div class="col-bottom">
+              <div>
+                <span class="col-price">Collected for $680</span>
+                <span class="col-date">22 January 2025</span>
+              </div>
+              <a class="cert-link" href="#">↓ Certificate</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: The Millimetre -->
+        <div class="col-card">
+          <div class="col-img" aria-hidden="true"></div>
+          <div class="col-details">
+            <div class="col-top">
+              <div>
+                <span class="col-series">Almost Series</span>
+                <h3 class="col-title">The Millimetre</h3>
+              </div>
+              <span class="badge gold">1 of 1</span>
+            </div>
+            <div class="col-middle">"close enough."</div>
+            <div class="col-bottom">
+              <div>
+                <span class="col-price">Collected for $3,100</span>
+                <span class="col-date">30 January 2025</span>
+              </div>
+              <a class="cert-link" href="#">↓ Certificate</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ORDER STATUS -->
+  <section class="orders">
+    <div class="wrap">
+      <span class="section-label">Order status</span>
+      <div class="order-cards">
+
+        <!-- Order 1: Summit Reserved — DELIVERED -->
+        <div class="order-card">
+          <div class="order-head">
+            <h3 class="order-title">Summit Reserved</h3>
+            <span class="order-num">FF-2025-0047</span>
+          </div>
+          <div class="timeline" aria-label="Order progress: Delivered">
+            <!-- connecting lines -->
+            <div class="timeline-track" aria-hidden="true">
+              <div class="timeline-track-seg" style="left:0;right:75%;border-color:var(--gold);"></div>
+              <div class="timeline-track-seg" style="left:25%;right:50%;border-color:var(--gold);"></div>
+              <div class="timeline-track-seg" style="left:50%;right:25%;border-color:var(--gold);"></div>
+              <div class="timeline-track-seg" style="left:75%;right:0;border-color:var(--gold);"></div>
+            </div>
+            <div class="t-stage">
+              <div class="t-dot done"></div>
+              <span class="t-label">Payment<br>confirmed</span>
+            </div>
+            <div class="t-stage">
+              <div class="t-dot done"></div>
+              <span class="t-label">Being<br>prepared</span>
+            </div>
+            <div class="t-stage">
+              <div class="t-dot done"></div>
+              <span class="t-label">Shipped</span>
+            </div>
+            <div class="t-stage">
+              <div class="t-dot done"></div>
+              <span class="t-label">Delivered</span>
+            </div>
+          </div>
+          <div class="tracking-row">
+            <span class="tracking-carrier">DHL Express · JD014600012345678</span>
+            <a class="tracking-link" href="#" target="_blank" rel="noopener">Track shipment →</a>
+          </div>
+        </div>
+
+        <!-- Order 2: Horizon Ramp — SHIPPED (current) -->
+        <div class="order-card">
+          <div class="order-head">
+            <h3 class="order-title">Horizon Ramp</h3>
+            <span class="order-num">FF-2025-0051</span>
+          </div>
+          <div class="timeline" aria-label="Order progress: Shipped">
+            <div class="timeline-track" aria-hidden="true">
+              <div class="timeline-track-seg" style="left:0;right:75%;border-color:var(--gold);"></div>
+              <div class="timeline-track-seg" style="left:25%;right:50%;border-color:var(--gold);"></div>
+              <div class="timeline-track-seg" style="left:50%;right:25%;border-color:var(--gold);"></div>
+              <div class="timeline-track-seg" style="left:75%;right:0;border-color:rgba(240,237,232,0.10);"></div>
+            </div>
+            <div class="t-stage">
+              <div class="t-dot done"></div>
+              <span class="t-label">Payment<br>confirmed</span>
+            </div>
+            <div class="t-stage">
+              <div class="t-dot done"></div>
+              <span class="t-label">Being<br>prepared</span>
+            </div>
+            <div class="t-stage">
+              <div class="t-dot current"></div>
+              <span class="t-label">Shipped</span>
+              <span class="t-now">now</span>
+            </div>
+            <div class="t-stage">
+              <div class="t-dot upcoming"></div>
+              <span class="t-label upcoming">Delivered</span>
+            </div>
+          </div>
+          <div class="tracking-row">
+            <span class="tracking-carrier">FedEx International · 7489 2357 8910</span>
+            <a class="tracking-link" href="#" target="_blank" rel="noopener">Track shipment →</a>
+          </div>
+        </div>
+
+        <!-- Order 3: The Millimetre — BEING PREPARED (current) -->
+        <div class="order-card">
+          <div class="order-head">
+            <h3 class="order-title">The Millimetre</h3>
+            <span class="order-num">FF-2025-0058</span>
+          </div>
+          <div class="timeline" aria-label="Order progress: Being prepared">
+            <div class="timeline-track" aria-hidden="true">
+              <div class="timeline-track-seg" style="left:0;right:75%;border-color:var(--gold);"></div>
+              <div class="timeline-track-seg" style="left:25%;right:50%;border-color:var(--gold);"></div>
+              <div class="timeline-track-seg" style="left:50%;right:25%;border-color:rgba(240,237,232,0.10);"></div>
+              <div class="timeline-track-seg" style="left:75%;right:0;border-color:rgba(240,237,232,0.10);"></div>
+            </div>
+            <div class="t-stage">
+              <div class="t-dot done"></div>
+              <span class="t-label">Payment<br>confirmed</span>
+            </div>
+            <div class="t-stage">
+              <div class="t-dot current"></div>
+              <span class="t-label">Being<br>prepared</span>
+              <span class="t-now">now</span>
+            </div>
+            <div class="t-stage">
+              <div class="t-dot upcoming"></div>
+              <span class="t-label upcoming">Shipped</span>
+            </div>
+            <div class="t-stage">
+              <div class="t-dot upcoming"></div>
+              <span class="t-label upcoming">Delivered</span>
+            </div>
+          </div>
+          <p class="tracking-pending">Tracking will appear here when shipped.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CERTIFICATES -->
+  <section class="certs">
+    <div class="wrap">
+      <span class="section-label">Certificates</span>
+      <div class="cert-rows">
+
+        <div class="cert-row">
+          <div>
+            <h3 class="cert-piece-title">Summit Reserved</h3>
+            <span class="cert-sub">Certificate of Authenticity · 1 of 1</span>
+            <span class="cert-destruction">Destruction Record included</span>
+          </div>
+          <a class="cert-download" href="#">↓ Download PDF</a>
+        </div>
+
+        <div class="cert-row">
+          <div>
+            <h3 class="cert-piece-title">Horizon Ramp</h3>
+            <span class="cert-sub">Certificate of Authenticity · Copy 2 of 3</span>
+          </div>
+          <a class="cert-download" href="#">↓ Download PDF</a>
+        </div>
+
+        <div class="cert-row">
+          <div>
+            <h3 class="cert-piece-title">The Millimetre</h3>
+            <span class="cert-sub">Certificate of Authenticity · 1 of 1</span>
+            <span class="cert-destruction">Destruction Record included</span>
+          </div>
+          <a class="cert-download" href="#">↓ Download PDF</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="wrap">
+      <div class="foot-top">
+        <div class="foot-brand">
+          <img src="assets/logomark.png" alt="Flawed Frame" />
+          <div class="tag">Imperfection. Preserved.</div>
+        </div>
+        <div class="foot-links">
+          <a href="archive.html">Archive</a>
+          <a href="index.html#series-1">Collect</a>
+          <a href="#">Instagram</a>
+        </div>
+      </div>
+      <div class="foot-bottom">
+        <div>© 2025 Flawed Frame. All pieces registered. No reprints.</div>
+        <div>International shipping. USD.</div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
