@@ -7,10 +7,11 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Outfit:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="ff.css">
+  <link rel="stylesheet" href="/flawedframe/mobile-nav.css">
+  <link rel="stylesheet" href="/flawedframe/ff.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
   <style>
-    main { padding-top: 72px; }
+    main { padding-top: var(--nav-h); }
 
     .confirm-wrap {
       max-width: 560px;
@@ -213,17 +214,19 @@
 </head>
 <body>
 
-<nav>
-  <a href="index.html" class="nav-logo">
-    <div class="nav-mark">FF</div>
-    <span class="nav-wordmark">Flawed Frame</span>
-  </a>
-  <ul class="nav-links">
-    <li><a href="index.html">Gallery</a></li>
-    <li><a href="archive.html">Archive</a></li>
-  </ul>
-  <div class="nav-actions" id="nav-actions">
-    <a href="account.html" class="btn-nav btn-nav-ghost">My Collection</a>
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/flawedframe/index.html" class="nav-logo">
+      <img src="/flawedframe/assets/logomark.png" alt="Flawed Frame">
+    </a>
+    <ul class="nav-links">
+      <li><a href="/flawedframe/index.html">Current</a></li>
+      <li><a href="/flawedframe/archive.html">Archive</a></li>
+      <li><a href="/flawedframe/account.html">Collect</a></li>
+    </ul>
+    <div class="nav-actions nav-right" id="nav-actions">
+      <a href="/flawedframe/account.html" class="btn-nav btn-nav-ghost">My Collection</a>
+    </div>
   </div>
 </nav>
 
@@ -237,12 +240,12 @@
 
   <footer>
     <div class="footer-left">
-      <span class="nav-wordmark" style="color:var(--gold)">FLAWED FRAME</span>
+      <img src="/flawedframe/assets/logomark.png" alt="Flawed Frame" style="height:28px;opacity:0.4;margin-bottom:4px;">
       <span class="footer-tagline">Imperfection. Preserved.</span>
     </div>
     <ul class="footer-links">
-      <li><a href="index.html">Gallery</a></li>
-      <li><a href="account.html">My Collection</a></li>
+      <li><a href="/flawedframe/index.html">Gallery</a></li>
+      <li><a href="/flawedframe/account.html">My Collection</a></li>
       <li><a href="mailto:collect@flawedframe.com">Contact</a></li>
     </ul>
     <span class="footer-copy">© 2025 Flawed Frame</span>
@@ -283,7 +286,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('confirm-content').innerHTML = `
       <div style="text-align:center;padding:80px 24px;">
         <p style="font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--text-muted);">Order not found.</p>
-        <a href="index.html" style="margin-top:24px;display:inline-block;" class="btn-secondary">Return to Gallery</a>
+        <a href="/flawedframe/index.html" style="margin-top:24px;display:inline-block;" class="btn-secondary">Return to Gallery</a>
       </div>`;
     return;
   }
@@ -355,8 +358,8 @@ function renderConfirmed(o) {
     </ol>
 
     <div class="ctas">
-      <a href="account.html" class="btn-primary">View my collection</a>
-      <a href="index.html" class="btn-secondary">Return to gallery</a>
+      <a href="/flawedframe/account.html" class="btn-primary">View my collection</a>
+      <a href="/flawedframe/index.html" class="btn-secondary">Return to gallery</a>
     </div>
 
     <p class="contact-line">Questions? <a href="mailto:collect@flawedframe.com">collect@flawedframe.com</a></p>
@@ -365,5 +368,6 @@ function renderConfirmed(o) {
   `;
 }
 </script>
+<script src="/flawedframe/mobile-nav.js"></script>
 </body>
 </html>

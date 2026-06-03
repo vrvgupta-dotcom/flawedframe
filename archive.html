@@ -7,9 +7,10 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Outfit:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="ff.css">
+  <link rel="stylesheet" href="/flawedframe/mobile-nav.css">
+  <link rel="stylesheet" href="/flawedframe/ff.css">
   <style>
-    main { padding-top: 72px; }
+    main { padding-top: var(--nav-h); }
 
     .page-header {
       max-width: 1200px;
@@ -200,17 +201,20 @@
 </head>
 <body>
 
-<nav>
-  <a href="index.html" class="nav-logo">
-    <div class="nav-mark">FF</div>
-    <span class="nav-wordmark">Flawed Frame</span>
-  </a>
-  <ul class="nav-links">
-    <li><a href="index.html">Gallery</a></li>
-    <li><a href="archive.html" class="active">Archive</a></li>
-  </ul>
-  <div class="nav-actions" id="nav-actions">
-    <button class="btn-nav" id="btn-auth" onclick="window.location.href='index.html'">Sign In</button>
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="/flawedframe/index.html" class="nav-logo">
+      <img src="/flawedframe/assets/logomark.png" alt="Flawed Frame">
+    </a>
+    <ul class="nav-links">
+      <li><a href="/flawedframe/index.html">Current</a></li>
+      <li><a href="/flawedframe/archive.html" class="active">Archive</a></li>
+      <li><a href="/flawedframe/account.html">Collect</a></li>
+      <li><a href="/flawedframe/index.html" class="nav-signin">Sign In</a></li>
+    </ul>
+    <div class="nav-actions nav-right" id="nav-actions">
+      <button class="btn-nav" onclick="window.location.href='/flawedframe/index.html'">Sign In</button>
+    </div>
   </div>
 </nav>
 
@@ -336,17 +340,17 @@
   <div class="archive-note">
     <p class="archive-note-text">The gallery continues.</p>
     <p class="archive-note-sub">New series are announced without notice.</p>
-    <a href="index.html" style="display:inline-block;margin-top:28px;" class="btn-secondary">Return to Gallery</a>
+    <a href="/flawedframe/index.html" style="display:inline-block;margin-top:28px;" class="btn-secondary">Return to Gallery</a>
   </div>
 
   <footer>
     <div class="footer-left">
-      <span class="nav-wordmark" style="color:var(--gold)">FLAWED FRAME</span>
+      <img src="/flawedframe/assets/logomark.png" alt="Flawed Frame" style="height:28px;opacity:0.4;margin-bottom:4px;">
       <span class="footer-tagline">Imperfection. Preserved.</span>
     </div>
     <ul class="footer-links">
-      <li><a href="index.html">Gallery</a></li>
-      <li><a href="account.html">My Collection</a></li>
+      <li><a href="/flawedframe/index.html">Gallery</a></li>
+      <li><a href="/flawedframe/account.html">My Collection</a></li>
       <li><a href="mailto:collect@flawedframe.com">Contact</a></li>
     </ul>
     <span class="footer-copy">© 2025 Flawed Frame</span>
@@ -363,10 +367,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   const nav = document.getElementById('nav-actions');
   if (session?.user) {
     nav.innerHTML = `
-      <a href="account.html" class="btn-nav btn-nav-ghost">My Collection</a>
+      <a href="/flawedframe/account.html" class="btn-nav btn-nav-ghost">My Collection</a>
       <button class="btn-nav" onclick="sb.auth.signOut().then(()=>window.location.href='index.html')">Sign Out</button>`;
   }
 });
 </script>
+<script src="/flawedframe/mobile-nav.js"></script>
 </body>
 </html>

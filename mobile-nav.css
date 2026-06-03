@@ -1,0 +1,78 @@
+/* Flawed Frame — shared mobile navigation
+   Hamburger + full-screen slide-down menu. Activates at <=640px.
+   Pairs with mobile-nav.js. Relies on each page's :root tokens
+   (--ink, --gold, --display, --nav-h) with safe fallbacks. */
+
+.nav-toggle { display: none; }
+.m-menu { display: none; }
+
+@media (max-width: 640px) {
+  /* hide the inline links; keep logo + any avatar */
+  .nav .nav-links { display: none !important; }
+
+  .nav-toggle {
+    display: flex; flex-direction: column; justify-content: center;
+    gap: 5px; width: 40px; height: 40px; padding: 0;
+    background: transparent; border: 0; cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .nav-toggle span {
+    display: block; width: 21px; height: 0.5px; margin-left: auto;
+    background: #f0ede8; opacity: 0.85;
+    transition: transform .32s cubic-bezier(.2,.7,.2,1), opacity .2s ease, width .32s cubic-bezier(.2,.7,.2,1);
+  }
+  .nav-toggle:hover span { opacity: 1; }
+  .nav-toggle span:nth-child(2) { width: 15px; }
+  .nav-toggle.is-open span:nth-child(1) { transform: translateY(5.5px) rotate(45deg); width: 21px; }
+  .nav-toggle.is-open span:nth-child(2) { opacity: 0; }
+  .nav-toggle.is-open span:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); width: 21px; }
+
+  /* full-screen menu sits BELOW the nav bar (z 100) so the logo + X stay live */
+  .m-menu {
+    display: flex; flex-direction: column;
+    position: fixed; inset: 0; z-index: 90;
+    background: rgba(11,11,9,0.985);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    padding: calc(var(--nav-h, 72px) + 28px) 28px 36px;
+    opacity: 0; pointer-events: none; transform: translateY(-10px);
+    transition: opacity .34s ease, transform .34s cubic-bezier(.2,.7,.2,1);
+  }
+  .m-menu.is-open { opacity: 1; pointer-events: auto; transform: none; }
+
+  .m-menu-eyebrow {
+    font-family: var(--sans, system-ui, sans-serif); font-weight: 400; font-size: 10px;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: #f0ede8; opacity: 0.28; margin-bottom: 26px;
+  }
+  .m-menu-list { display: flex; flex-direction: column; }
+  .m-menu-list a {
+    font-family: var(--display, Georgia, serif); font-weight: 300;
+    font-size: 34px; line-height: 1.2; letter-spacing: -0.01em;
+    color: #f0ede8; opacity: 0.9; text-decoration: none;
+    padding: 18px 0; border-bottom: 0.5px solid rgba(240,237,232,0.08);
+    display: flex; align-items: baseline; justify-content: space-between; gap: 16px;
+    transition: opacity .2s ease, padding-left .25s cubic-bezier(.2,.7,.2,1);
+  }
+  .m-menu-list a:active { padding-left: 8px; }
+  .m-menu-list a .idx {
+    font-family: var(--mono, monospace); font-weight: 300; font-size: 12px;
+    letter-spacing: 0.06em; opacity: 0.3;
+  }
+  .m-menu-list a.m-signin { color: var(--gold, #c9a84c); opacity: 0.92; }
+
+  .m-menu-foot {
+    margin-top: auto; padding-top: 28px;
+    font-family: var(--sans, system-ui, sans-serif); font-weight: 300; font-size: 12px;
+    line-height: 1.7; color: #f0ede8; opacity: 0.3;
+  }
+  .m-menu-foot a {
+    color: #f0ede8; opacity: 0.55;
+    border-bottom: 0.5px solid rgba(240,237,232,0.18); padding-bottom: 1px;
+  }
+}
+
+/* never show the menu on larger screens even if state lingers */
+@media (min-width: 641px) {
+  .m-menu { display: none !important; }
+  .nav-toggle { display: none !important; }
+}

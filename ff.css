@@ -11,9 +11,18 @@
   --gold-dim: rgba(201,168,76,0.1);
   --gold-border: rgba(201,168,76,0.2);
   --border: rgba(255,255,255,0.07);
+  --nav-h: 72px;
+  --display: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Outfit', system-ui, sans-serif;
+  --mono: 'DM Mono', monospace;
 }
 
-html { scroll-behavior: smooth; }
+/* Bug 1 fix: prevent global horizontal overflow */
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  max-width: 100%;
+}
 
 body {
   background: var(--bg);
@@ -23,51 +32,43 @@ body {
   line-height: 1.6;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  max-width: 100%;
 }
 
 /* NAV */
-nav {
+nav.nav {
   position: fixed;
   top: 0; left: 0; right: 0;
-  height: 72px;
+  height: var(--nav-h);
   background: rgba(11,11,9,0.88);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
+  padding: 0 48px;
+  z-index: 100;
+}
+
+.nav-inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 48px;
-  z-index: 100;
+  height: 100%;
+  width: 100%;
 }
 
 .nav-logo {
   display: flex;
   align-items: center;
-  gap: 12px;
   text-decoration: none;
-  color: var(--text);
-}
-
-.nav-mark {
-  width: 32px; height: 32px;
-  border: 1px solid var(--gold-border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 14px;
-  letter-spacing: 1px;
-  color: var(--gold);
   flex-shrink: 0;
 }
 
-.nav-wordmark {
-  font-family: 'DM Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--text-muted);
+.nav-logo img {
+  height: 36px;
+  width: auto;
+  opacity: 0.92;
+  display: block;
 }
 
 .nav-links {
@@ -88,6 +89,9 @@ nav {
 }
 
 .nav-links a:hover, .nav-links a.active { color: var(--text); }
+
+.nav-links a.nav-signin { color: var(--gold); opacity: 0.85; }
+.nav-links a.nav-signin:hover { color: var(--gold); opacity: 1; }
 
 .nav-actions { display: flex; align-items: center; gap: 12px; }
 
@@ -295,9 +299,10 @@ footer {
   100% { background-position: -200% 0; }
 }
 
-/* RESPONSIVE NAV */
-@media (max-width: 768px) {
-  nav { padding: 0 20px; }
-  .nav-links { display: none; }
-  footer { padding: 40px 20px; flex-direction: column; align-items: flex-start; }
+/* RESPONSIVE */
+@media (max-width: 800px) {
+  nav.nav { padding: 0 22px; }
+  footer { padding: 40px 22px; flex-direction: column; align-items: flex-start; }
 }
+
+/* mobile-nav.css handles hiding .nav-links at <=640px via !important */
