@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flawed Frame — Order Secured</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Outfit:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="ff.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <style>
+    main { padding-top: 72px; }
+
+    .confirm-wrap {
+      max-width: 560px;
+      margin: 0 auto;
+      padding: 80px 24px 80px;
+    }
+
+    .top-rule {
+      height: 1px;
+      background: var(--gold-border);
+      margin-bottom: 56px;
+    }
+
+    .confirm-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(52px, 8vw, 72px);
+      font-weight: 300;
+      line-height: 0.9;
+      letter-spacing: -0.01em;
+      margin-bottom: 14px;
+      text-align: center;
+    }
+
+    .confirm-sub {
+      font-size: 14px;
+      color: var(--text-muted);
+      text-align: center;
+      line-height: 1.7;
+      margin-bottom: 52px;
+    }
+
+    /* ORDER CARD */
+    .order-card {
+      border: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0;
+      margin-bottom: 40px;
+    }
+
+    .order-card-left {
+      padding: 28px 32px;
+      border-right: 1px solid var(--border);
+    }
+
+    .order-card-right {
+      padding: 28px 32px;
+      text-align: right;
+    }
+
+    .oc-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-weight: 400;
+      margin-bottom: 4px;
+    }
+
+    .oc-edition {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .oc-inscription {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 15px;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+
+    .oc-order-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+      opacity: 0.6;
+    }
+
+    .oc-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 30px;
+      font-weight: 300;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+
+    .oc-via {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+    }
+
+    /* NEXT STEPS */
+    .next-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+    }
+
+    .steps-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      border: 1px solid var(--border);
+      margin-bottom: 40px;
+    }
+
+    .step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .step-item:last-child { border-bottom: none; }
+
+    .step-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 20px;
+      font-weight: 300;
+      color: var(--gold);
+      opacity: 0.6;
+      min-width: 24px;
+      line-height: 1.2;
+    }
+
+    .step-text {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      padding-top: 1px;
+    }
+
+    .step-text strong {
+      color: var(--text);
+      font-weight: 400;
+    }
+
+    /* CTAS */
+    .ctas {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+
+    .ctas a { flex: 1; }
+
+    .contact-line {
+      text-align: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+      opacity: 0.5;
+    }
+
+    .contact-line a {
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+
+    .contact-line a:hover { color: var(--text); opacity: 1; }
+
+    .bottom-rule {
+      height: 1px;
+      background: var(--gold-border);
+      margin-top: 56px;
+    }
+
+    /* LOADING STATE */
+    .loading-confirm {
+      text-align: center;
+      padding: 80px 24px;
+    }
+
+    .loading-confirm p {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 480px) {
+      .order-card { grid-template-columns: 1fr; }
+      .order-card-left { border-right: none; border-bottom: 1px solid var(--border); }
+      .order-card-right { text-align: left; }
+      .ctas { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-mark">FF</div>
+    <span class="nav-wordmark">Flawed Frame</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Gallery</a></li>
+    <li><a href="archive.html">Archive</a></li>
+  </ul>
+  <div class="nav-actions" id="nav-actions">
+    <a href="account.html" class="btn-nav btn-nav-ghost">My Collection</a>
+  </div>
+</nav>
+
+<main>
+  <div class="confirm-wrap" id="confirm-content">
+    <div class="loading-confirm">
+      <div class="shimmer" style="width:120px;height:60px;margin:0 auto 16px;"></div>
+      <p>Confirming your order…</p>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-left">
+      <span class="nav-wordmark" style="color:var(--gold)">FLAWED FRAME</span>
+      <span class="footer-tagline">Imperfection. Preserved.</span>
+    </div>
+    <ul class="footer-links">
+      <li><a href="index.html">Gallery</a></li>
+      <li><a href="account.html">My Collection</a></li>
+      <li><a href="mailto:collect@flawedframe.com">Contact</a></li>
+    </ul>
+    <span class="footer-copy">© 2025 Flawed Frame</span>
+  </footer>
+</main>
+
+<script>
+const SB_URL = 'https://utrrfwdtoacefmgodilg.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0cnJmd2R0b2FjZWZtZ29kaWxnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0NTYzOTMsImV4cCI6MjA5NjAzMjM5M30.l5AmhWcPtMINCePhAfKcgcFLIsG7wWB2cDgQzNHRDPw';
+const sb = supabase.createClient(SB_URL, SB_KEY);
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const params = new URLSearchParams(window.location.search);
+  const orderId = params.get('order');
+  const isBackup = params.get('backup') === '1';
+  const backupNum = params.get('num');
+
+  if (isBackup) {
+    renderFromBackup(backupNum);
+    return;
+  }
+
+  if (!orderId) {
+    window.location.href = 'index.html';
+    return;
+  }
+
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) { window.location.href = 'index.html'; return; }
+
+  const { data: order, error } = await sb.from('orders')
+    .select('*, pieces(title, inscription, edition_label)')
+    .eq('id', orderId)
+    .eq('user_id', session.user.id)
+    .single();
+
+  if (error || !order) {
+    document.getElementById('confirm-content').innerHTML = `
+      <div style="text-align:center;padding:80px 24px;">
+        <p style="font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--text-muted);">Order not found.</p>
+        <a href="index.html" style="margin-top:24px;display:inline-block;" class="btn-secondary">Return to Gallery</a>
+      </div>`;
+    return;
+  }
+
+  renderOrder(order);
+});
+
+function renderFromBackup(num) {
+  const raw = localStorage.getItem('ff_backup');
+  if (!raw) { window.location.href = 'index.html'; return; }
+  const b = JSON.parse(raw);
+  localStorage.removeItem('ff_backup');
+
+  renderConfirmed({
+    order_number: b.num || num,
+    piece_title: b.pieceTitle,
+    edition_label: b.editionLabel,
+    copy_number: b.copy,
+    price: b.price,
+    created_at: new Date().toISOString(),
+    pieces: { inscription: '' }
+  });
+}
+
+function renderOrder(order) {
+  renderConfirmed(order);
+}
+
+function renderConfirmed(o) {
+  const date = new Date(o.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+  document.getElementById('confirm-content').innerHTML = `
+    <div class="top-rule"></div>
+
+    <h1 class="confirm-heading">Secured.</h1>
+    <p class="confirm-sub">Your piece has been reserved.<br>It will not be offered again.</p>
+
+    <div class="order-card">
+      <div class="order-card-left">
+        <h2 class="oc-title">${o.piece_title}</h2>
+        <p class="oc-edition">${o.edition_label} · Copy ${o.copy_number}</p>
+        ${o.pieces?.inscription ? `<p class="oc-inscription">"${o.pieces.inscription}"</p>` : ''}
+        <p class="oc-order-num">${o.order_number} · ${date}</p>
+      </div>
+      <div class="order-card-right">
+        <div class="oc-price">$${Number(o.price).toLocaleString()}</div>
+        <div class="oc-via">Paid via PayPal</div>
+      </div>
+    </div>
+
+    <p class="next-label">What happens next</p>
+    <ol class="steps-list">
+      <li class="step-item">
+        <span class="step-num">1</span>
+        <p class="step-text"><strong>Confirmation email</strong> — A receipt has been sent to your registered address.</p>
+      </li>
+      <li class="step-item">
+        <span class="step-num">2</span>
+        <p class="step-text"><strong>Preparation</strong> — Your piece is numbered and prepared for dispatch. This takes 2–4 working days.</p>
+      </li>
+      <li class="step-item">
+        <span class="step-num">3</span>
+        <p class="step-text"><strong>Certificate dispatch</strong> — Your certificate of authenticity is dispatched within 3 working days.</p>
+      </li>
+      <li class="step-item">
+        <span class="step-num">4</span>
+        <p class="step-text"><strong>Tracking</strong> — Follow your acquisition in <strong>My Collection</strong> at any time.</p>
+      </li>
+    </ol>
+
+    <div class="ctas">
+      <a href="account.html" class="btn-primary">View my collection</a>
+      <a href="index.html" class="btn-secondary">Return to gallery</a>
+    </div>
+
+    <p class="contact-line">Questions? <a href="mailto:collect@flawedframe.com">collect@flawedframe.com</a></p>
+
+    <div class="bottom-rule"></div>
+  `;
+}
+</script>
+</body>
+</html>

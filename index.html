@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flawed Frame — Imperfection. Preserved.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Outfit:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="ff.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="https://www.paypal.com/sdk/js?client-id=AY_gBnBwGNriV9C15XKQv241KuVgF6lenpVznfu0tCivHIGPaZR1guwaYWgjynM6CPabIfQ3iRBoJOL_&currency=USD&intent=capture"></script>
+  <style>
+    main { padding-top: 72px; }
+
+    /* HERO */
+    .hero {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 96px 48px 80px;
+    }
+
+    .hero-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 28px;
+    }
+
+    .hero-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(60px, 8vw, 96px);
+      font-weight: 300;
+      line-height: 0.93;
+      letter-spacing: -0.01em;
+      margin-bottom: 32px;
+    }
+
+    .hero-heading em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .hero-sub {
+      font-size: 15px;
+      color: var(--text-muted);
+      max-width: 440px;
+      line-height: 1.75;
+      margin-bottom: 48px;
+    }
+
+    .hero-pills {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .series-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 16px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+    }
+
+    .series-pill .days { color: var(--gold); }
+
+    .series-pill.urgent {
+      border-color: rgba(201,168,76,0.28);
+      background: rgba(201,168,76,0.04);
+    }
+
+    /* SERIES */
+    .series-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 72px 48px;
+    }
+
+    .series-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 48px;
+      gap: 24px;
+    }
+
+    .series-meta-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .pulse-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+      opacity: 0.6;
+    }
+
+    .pulse-dot.urgent {
+      opacity: 1;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.25; }
+    }
+
+    .series-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 42px;
+      font-weight: 300;
+      letter-spacing: -0.01em;
+      line-height: 1;
+    }
+
+    .series-days {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      text-align: right;
+    }
+
+    .series-days strong {
+      display: block;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px;
+      font-weight: 300;
+      color: var(--gold);
+      letter-spacing: -0.01em;
+      line-height: 1;
+    }
+
+    /* PIECE GRID */
+    .piece-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+    }
+
+    .piece-card {
+      background: var(--bg);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .piece-card:hover { background: var(--surface); }
+    .piece-card.sold { cursor: default; }
+    .piece-card.sold:hover { background: var(--bg); }
+
+    .piece-img {
+      aspect-ratio: 4/3;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .piece-img-bg {
+      position: absolute;
+      inset: 0;
+    }
+
+    .piece-img-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 65% 35%, rgba(201,168,76,0.06) 0%, transparent 65%);
+    }
+
+    .sold-veil {
+      position: absolute;
+      inset: 0;
+      background: rgba(11,11,9,0.65);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sold-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 6px 14px;
+    }
+
+    .piece-body {
+      padding: 18px 22px 22px;
+      border-top: 1px solid var(--border);
+    }
+
+    .piece-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 19px;
+      font-weight: 400;
+      line-height: 1.15;
+      margin-bottom: 5px;
+    }
+
+    .piece-edition {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+
+    .piece-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .piece-price {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    .piece-price.dim { color: var(--text-muted); }
+
+    .btn-acquire {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      background: var(--gold-dim);
+      border: 1px solid var(--gold-border);
+      color: var(--gold);
+      padding: 7px 14px;
+      cursor: pointer;
+      transition: background 0.18s;
+    }
+
+    .btn-acquire:hover { background: rgba(201,168,76,0.18); }
+
+    .edition-dots {
+      display: flex;
+      gap: 4px;
+      margin-top: 10px;
+    }
+
+    .e-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--border);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .e-dot.taken { background: var(--gold); opacity: 0.35; }
+
+    /* FACTS */
+    .facts {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .facts-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .fact {
+      padding: 56px 48px;
+      border-right: 1px solid var(--border);
+    }
+
+    .fact:last-child { border-right: none; }
+
+    .fact-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 56px;
+      font-weight: 300;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 14px;
+    }
+
+    .fact-copy {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      max-width: 210px;
+    }
+
+    /* ARCHIVE BAR */
+    .archive-bar {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 52px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      gap: 24px;
+    }
+
+    .archive-bar-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+
+    .archive-bar-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 24px;
+      font-weight: 300;
+      color: var(--text);
+    }
+
+    .link-arrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 2px;
+      transition: color 0.18s, border-color 0.18s;
+      white-space: nowrap;
+    }
+
+    .link-arrow:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+
+    /* PIECE MODAL */
+    .piece-modal {
+      width: 100%;
+      max-width: 780px;
+    }
+
+    .modal-img {
+      aspect-ratio: 16/7;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .modal-img-bg {
+      position: absolute;
+      inset: 0;
+    }
+
+    .modal-img-bg::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 60% 40%, rgba(201,168,76,0.07) 0%, transparent 60%);
+    }
+
+    .modal-body {
+      padding: 40px 44px 44px;
+    }
+
+    .modal-series-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 10px;
+    }
+
+    .modal-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 48px;
+      font-weight: 300;
+      line-height: 0.95;
+      margin-bottom: 10px;
+    }
+
+    .modal-inscription {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 17px;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+    }
+
+    .modal-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      border: 1px solid var(--border);
+      margin-bottom: 32px;
+    }
+
+    .modal-cell {
+      padding: 16px 20px;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .modal-cell:nth-child(2n) { border-right: none; }
+    .modal-cell:nth-last-child(-n+2) { border-bottom: none; }
+
+    .cell-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 8px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
+
+    .cell-value {
+      font-family: 'DM Mono', monospace;
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    .cell-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 34px;
+      font-weight: 300;
+      color: var(--gold);
+      line-height: 1;
+    }
+
+    #paypal-button-container { min-height: 50px; }
+
+    .purchase-sign-in {
+      border: 1px solid var(--gold-border);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .purchase-sign-in p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .btn-modal-signin {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      background: var(--gold-dim);
+      border: 1px solid var(--gold-border);
+      color: var(--gold);
+      padding: 11px 22px;
+      cursor: pointer;
+      transition: background 0.18s;
+      white-space: nowrap;
+    }
+
+    .btn-modal-signin:hover { background: rgba(201,168,76,0.2); }
+
+    .sold-msg {
+      text-align: center;
+      padding: 24px;
+      border: 1px solid var(--border);
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 16px;
+      color: var(--text-muted);
+    }
+
+    .modal-notice {
+      margin-top: 16px;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      opacity: 0.5;
+    }
+
+    /* AUTH MODAL */
+    .auth-modal {
+      width: 100%;
+      max-width: 400px;
+      padding: 52px 44px;
+      text-align: center;
+    }
+
+    .auth-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 30px;
+      font-weight: 300;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+
+    .auth-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 40px;
+    }
+
+    .btn-google {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      width: 100%;
+      padding: 15px 24px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      font-weight: 400;
+      cursor: pointer;
+      transition: border-color 0.18s, background 0.18s;
+    }
+
+    .btn-google:hover {
+      border-color: rgba(255,255,255,0.14);
+      background: #292723;
+    }
+
+    .auth-disclaimer {
+      margin-top: 24px;
+      font-size: 11px;
+      color: var(--text-muted);
+      opacity: 0.45;
+      line-height: 1.6;
+    }
+
+    /* SKELETON */
+    .skel-line { border-radius: 1px; }
+
+    @media (max-width: 900px) {
+      .piece-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 640px) {
+      .hero { padding: 72px 20px 56px; }
+      .series-section { padding: 52px 20px; }
+      .piece-grid { grid-template-columns: 1fr; }
+      .facts-inner { grid-template-columns: 1fr; }
+      .fact { border-right: none; border-bottom: 1px solid var(--border); }
+      .archive-bar { padding: 40px 20px; flex-direction: column; align-items: flex-start; }
+      .modal-body { padding: 24px; }
+      .modal-grid { grid-template-columns: 1fr; }
+      .modal-cell { border-right: none; }
+      .modal-cell:nth-last-child(-n+2) { border-bottom: 1px solid var(--border); }
+      .modal-cell:last-child { border-bottom: none; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-mark">FF</div>
+    <span class="nav-wordmark">Flawed Frame</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html" class="active">Gallery</a></li>
+    <li><a href="archive.html">Archive</a></li>
+  </ul>
+  <div class="nav-actions" id="nav-actions">
+    <button class="btn-nav" onclick="openAuthModal()">Sign In</button>
+  </div>
+</nav>
+
+<main>
+  <section class="hero">
+    <p class="hero-eyebrow">Limited Edition Photography</p>
+    <h1 class="hero-heading">Imperfection.<br><em>Preserved.</em></h1>
+    <p class="hero-sub">A private gallery of numbered editions. Each piece offered once, for a fixed window. When gone, it is gone permanently.</p>
+    <div class="hero-pills" id="hero-pills"></div>
+  </section>
+
+  <div class="hairline"></div>
+
+  <div id="gallery"></div>
+
+  <section class="facts">
+    <div class="facts-inner">
+      <div class="fact">
+        <div class="fact-num">∞→1</div>
+        <p class="fact-copy">Every edition is finite. When the last copy is acquired, the piece closes permanently.</p>
+      </div>
+      <div class="fact">
+        <div class="fact-num">100%</div>
+        <p class="fact-copy">Each acquisition is verified and numbered. Your copy number is recorded and certified.</p>
+      </div>
+      <div class="fact">
+        <div class="fact-num">Once</div>
+        <p class="fact-copy">Each series runs for a fixed window. When the window closes, it will not be reopened.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="archive-bar">
+    <div>
+      <p class="archive-bar-label">Closed Series</p>
+      <p class="archive-bar-text">Some windows have already shut.</p>
+    </div>
+    <a href="archive.html" class="link-arrow">Browse the Archive →</a>
+  </div>
+
+  <footer>
+    <div class="footer-left">
+      <span class="nav-wordmark" style="color:var(--gold)">FLAWED FRAME</span>
+      <span class="footer-tagline">Imperfection. Preserved.</span>
+    </div>
+    <ul class="footer-links">
+      <li><a href="archive.html">Archive</a></li>
+      <li><a href="account.html">My Collection</a></li>
+      <li><a href="mailto:collect@flawedframe.com">Contact</a></li>
+    </ul>
+    <span class="footer-copy">© 2025 Flawed Frame</span>
+  </footer>
+</main>
+
+<!-- PIECE MODAL -->
+<div class="modal-backdrop" id="piece-backdrop" onclick="handleBackdropClick(event,'piece-backdrop')">
+  <div class="modal-panel piece-modal" id="piece-modal">
+    <button class="modal-close" onclick="closePieceModal()">✕</button>
+    <div class="modal-img"><div class="modal-img-bg" id="modal-img"></div></div>
+    <div class="modal-body">
+      <p class="modal-series-tag" id="modal-series-tag"></p>
+      <h2 class="modal-title" id="modal-title"></h2>
+      <p class="modal-inscription" id="modal-inscription"></p>
+      <div class="modal-grid">
+        <div class="modal-cell">
+          <div class="cell-label">Edition</div>
+          <div class="cell-value" id="modal-edition"></div>
+        </div>
+        <div class="modal-cell">
+          <div class="cell-label">Your copy</div>
+          <div class="cell-value" id="modal-copy"></div>
+        </div>
+        <div class="modal-cell">
+          <div class="cell-label">Price</div>
+          <div class="cell-price" id="modal-price"></div>
+        </div>
+        <div class="modal-cell">
+          <div class="cell-label">Series</div>
+          <div class="cell-value" id="modal-series-val"></div>
+        </div>
+      </div>
+      <div id="purchase-area"></div>
+      <p class="modal-notice">All sales are final. Certificates dispatched within 3 working days of acquisition.</p>
+    </div>
+  </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="modal-backdrop" id="auth-backdrop" onclick="handleBackdropClick(event,'auth-backdrop')">
+  <div class="modal-panel auth-modal">
+    <button class="modal-close" onclick="closeAuthModal()">✕</button>
+    <div class="auth-logo">Flawed Frame</div>
+    <p class="auth-sub">Sign in to acquire limited editions.</p>
+    <button class="btn-google" id="btn-google" onclick="signInWithGoogle()">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+        <path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/>
+        <path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z" fill="#34A853"/>
+        <path d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 000 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/>
+        <path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z" fill="#EA4335"/>
+      </svg>
+      Continue with Google
+    </button>
+    <p class="auth-disclaimer">By signing in you agree to our terms. Your details are used solely to process and record your acquisition.</p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SB_URL  = 'https://utrrfwdtoacefmgodilg.supabase.co';
+const SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0cnJmd2R0b2FjZWZtZ29kaWxnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0NTYzOTMsImV4cCI6MjA5NjAzMjM5M30.l5AmhWcPtMINCePhAfKcgcFLIsG7wWB2cDgQzNHRDPw';
+const sb = supabase.createClient(SB_URL, SB_KEY);
+
+const GRADIENTS = {
+  'summit-reserved':  'linear-gradient(140deg,#0d0804 0%,#2a1a09 55%,#0d0804 100%)',
+  'horizon-ramp':     'linear-gradient(140deg,#030a0f 0%,#0a2535 55%,#030a0f 100%)',
+  'written-in-cloud': 'linear-gradient(160deg,#08090f 0%,#131525 55%,#08090f 100%)',
+  'the-loop':         'linear-gradient(50deg, #08080a 0%,#151408 55%,#08080a 100%)',
+  'four-fifty-five':  'linear-gradient(140deg,#0a080d 0%,#1f1428 55%,#0a080d 100%)',
+  'desert-signal':    'linear-gradient(140deg,#0f0800 0%,#2e1600 55%,#0f0800 100%)',
+  'the-millimetre':   'linear-gradient(140deg,#050f0c 0%,#0d2822 55%,#050f0c 100%)',
+  'tide-and-line':    'linear-gradient(140deg,#03080f 0%,#081a2d 55%,#03080f 100%)',
+  'one-shelf-up':     'linear-gradient(140deg,#060b06 0%,#101e10 55%,#060b06 100%)',
+  'washed-away':      'linear-gradient(140deg,#07070f 0%,#10103d 55%,#07070f 100%)',
+  'the-last-step':    'linear-gradient(140deg,#0f0407 0%,#280a14 55%,#0f0407 100%)',
+  'silver-lining':    'linear-gradient(140deg,#0d0d0a 0%,#1e1e14 55%,#0d0d0a 100%)',
+};
+
+let user = null;
+let pieces = [];
+let activePiece = null;
+let ppButtons = null;
+let toastTmr;
+
+document.addEventListener('DOMContentLoaded', async () => {
+  renderSkeletons();
+  await initAuth();
+  await loadPieces();
+  renderGallery();
+  checkPending();
+});
+
+async function initAuth() {
+  const { data: { session } } = await sb.auth.getSession();
+  user = session?.user ?? null;
+  updateNav();
+
+  sb.auth.onAuthStateChange((event, session) => {
+    const prev = !!user;
+    user = session?.user ?? null;
+    updateNav();
+    if (event === 'SIGNED_IN' && !prev) {
+      closeAuthModal();
+      toast('Welcome to Flawed Frame.', 'success');
+      const slug = sessionStorage.getItem('ff_pending');
+      if (slug && pieces.length) {
+        const p = pieces.find(x => x.slug === slug);
+        if (p) { sessionStorage.removeItem('ff_pending'); setTimeout(() => openPieceModal(p), 250); }
+      }
+    }
+    if (event === 'SIGNED_OUT') toast('Signed out.', '');
+  });
+}
+
+function updateNav() {
+  document.getElementById('nav-actions').innerHTML = user
+    ? `<a href="account.html" class="btn-nav btn-nav-ghost">My Collection</a>
+       <button class="btn-nav" onclick="signOut()">Sign Out</button>`
+    : `<button class="btn-nav" onclick="openAuthModal()">Sign In</button>`;
+}
+
+async function loadPieces() {
+  const { data } = await sb.from('pieces').select('*')
+    .order('series_number').order('created_at');
+  if (data) pieces = data;
+}
+
+function daysLeft(ts) {
+  if (!ts) return '—';
+  return Math.max(0, Math.ceil((new Date(ts) - Date.now()) / 86400000));
+}
+
+function renderSkeletons() {
+  const g = document.getElementById('gallery');
+  g.innerHTML = [1,2].map(() => `
+    <section class="series-section">
+      <div class="series-header">
+        <div>
+          <div class="skel-line shimmer" style="width:70px;height:10px;margin-bottom:10px;"></div>
+          <div class="skel-line shimmer" style="width:160px;height:36px;"></div>
+        </div>
+      </div>
+      <div class="piece-grid">
+        ${Array(6).fill(0).map(() => `
+          <div style="background:var(--bg);">
+            <div class="shimmer" style="aspect-ratio:4/3;"></div>
+            <div style="padding:18px 22px 22px;border-top:1px solid var(--border);">
+              <div class="skel-line shimmer" style="width:55%;height:14px;margin-bottom:8px;"></div>
+              <div class="skel-line shimmer" style="width:35%;height:9px;margin-bottom:14px;"></div>
+              <div class="skel-line shimmer" style="width:70%;height:12px;"></div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </section>
+    <div class="hairline"></div>
+  `).join('');
+}
+
+function renderGallery() {
+  if (!pieces.length) {
+    document.getElementById('gallery').innerHTML = '<div style="padding:80px 48px;color:var(--text-muted);font-family:\'DM Mono\',monospace;font-size:12px;">No pieces available.</div>';
+    return;
+  }
+
+  const s1 = pieces.filter(p => p.series_number === 1);
+  const s2 = pieces.filter(p => p.series_number === 2);
+
+  document.getElementById('hero-pills').innerHTML = [s1, s2].map((arr, i) => {
+    const days = daysLeft(arr[0]?.series_ends_at);
+    const urgent = typeof days === 'number' && days <= 30;
+    const name = i === 0 ? 'Access' : 'Almost';
+    return `<div class="series-pill${urgent ? ' urgent' : ''}">Series ${i===0?'I':'II'} · ${name} &nbsp;<span class="days">${days} days</span></div>`;
+  }).join('');
+
+  let html = '';
+  if (s1.length) html += renderSeries('Access', 'Series I', 1, s1) + '<div class="hairline"></div>';
+  if (s2.length) html += renderSeries('Almost', 'Series II', 2, s2) + '<div class="hairline"></div>';
+  document.getElementById('gallery').innerHTML = html;
+}
+
+function renderSeries(name, label, num, items) {
+  const days = daysLeft(items[0]?.series_ends_at);
+  const urgent = typeof days === 'number' && days <= 30;
+  return `
+    <section class="series-section">
+      <div class="series-header">
+        <div>
+          <div class="series-meta-row">
+            <span class="pulse-dot${urgent?' urgent':''}"></span>
+            <span>${label}</span>
+            ${urgent ? '<span style="color:var(--gold)">— Closing soon</span>' : ''}
+          </div>
+          <h2 class="series-name">${name}</h2>
+        </div>
+        <div class="series-days">
+          <strong>${days}</strong>
+          days remaining
+        </div>
+      </div>
+      <div class="piece-grid">
+        ${items.map(renderCard).join('')}
+      </div>
+    </section>
+  `;
+}
+
+function renderCard(p) {
+  const sold = p.status === 'sold' || p.sold_count >= p.edition_total;
+  const grad = GRADIENTS[p.slug] || 'linear-gradient(135deg,#0a0a0a,#1a1a1a)';
+  const avail = p.edition_total - p.sold_count;
+  const dots = p.edition_total <= 10
+    ? Array.from({length: p.edition_total}, (_, i) =>
+        `<div class="e-dot${i < p.sold_count ? ' taken' : ''}"></div>`).join('')
+    : '';
+
+  return `
+    <div class="piece-card${sold?' sold':''}" ${!sold ? `onclick="openPieceById('${p.id}')"` : ''}>
+      <div class="piece-img">
+        <div class="piece-img-bg" style="background:${grad};"></div>
+        ${sold ? `<div class="sold-veil"><span class="sold-label">Sold</span></div>` : ''}
+      </div>
+      <div class="piece-body">
+        <h3 class="piece-title">${p.title}</h3>
+        <p class="piece-edition">${p.edition_label}${!sold && p.edition_total > 1 ? ` · ${avail} remaining` : ''}</p>
+        <div class="piece-footer">
+          <span class="piece-price${sold?' dim':''}">$${Number(p.price).toLocaleString()}</span>
+          ${!sold ? `<button class="btn-acquire">Acquire</button>` : ''}
+        </div>
+        ${dots ? `<div class="edition-dots">${dots}</div>` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function openPieceById(id) {
+  const p = pieces.find(x => x.id === id);
+  if (p) openPieceModal(p);
+}
+
+function openPieceModal(p) {
+  activePiece = p;
+  const sold = p.status === 'sold' || p.sold_count >= p.edition_total;
+  const grad = GRADIENTS[p.slug] || 'linear-gradient(135deg,#0a0a0a,#1a1a1a)';
+
+  document.getElementById('modal-img').style.background = grad;
+  document.getElementById('modal-series-tag').textContent = `Series ${p.series_number === 1 ? 'I' : 'II'} · ${p.series}`;
+  document.getElementById('modal-title').textContent = p.title;
+  document.getElementById('modal-inscription').textContent = `"${p.inscription}"`;
+  document.getElementById('modal-edition').textContent = p.edition_label;
+  document.getElementById('modal-copy').textContent = sold ? 'Sold out' : `Copy ${p.sold_count + 1} of ${p.edition_total}`;
+  document.getElementById('modal-price').textContent = `$${Number(p.price).toLocaleString()}`;
+  document.getElementById('modal-series-val').textContent = p.series;
+
+  const pa = document.getElementById('purchase-area');
+  if (sold) {
+    pa.innerHTML = `<div class="sold-msg">This piece has found its collector.</div>`;
+  } else if (!user) {
+    pa.innerHTML = `
+      <div class="purchase-sign-in">
+        <p>Sign in to acquire this piece.</p>
+        <button class="btn-modal-signin" onclick="triggerSignIn('${p.slug}')">Sign In</button>
+      </div>`;
+  } else {
+    pa.innerHTML = `<div id="paypal-button-container"></div>`;
+    renderPayPal(p);
+  }
+
+  document.getElementById('piece-backdrop').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePieceModal() {
+  document.getElementById('piece-backdrop').classList.remove('open');
+  document.body.style.overflow = '';
+  if (ppButtons) { try { ppButtons.close(); } catch(e) {} ppButtons = null; }
+  activePiece = null;
+}
+
+function renderPayPal(p) {
+  if (typeof paypal === 'undefined') {
+    document.getElementById('paypal-button-container').innerHTML =
+      '<p style="font-size:13px;color:var(--text-muted);">Payment system unavailable.</p>';
+    return;
+  }
+
+  const old = document.getElementById('paypal-button-container');
+  const fresh = document.createElement('div');
+  fresh.id = 'paypal-button-container';
+  old.replaceWith(fresh);
+
+  ppButtons = paypal.Buttons({
+    style: { layout:'vertical', color:'gold', shape:'rect', label:'pay', height:44 },
+    createOrder: (data, actions) => actions.order.create({
+      purchase_units: [{ amount: { value: p.price.toString() }, description: `${p.title} — ${p.edition_label}` }]
+    }),
+    onApprove: async (data, actions) => {
+      document.getElementById('paypal-button-container').innerHTML =
+        '<p style="text-align:center;padding:16px;font-size:13px;color:var(--text-muted);">Processing your acquisition…</p>';
+      try {
+        const capture = await actions.order.capture();
+        await recordOrder(p, capture);
+      } catch(e) {
+        toast('Capture failed. Contact collect@flawedframe.com.', 'error');
+        renderPayPal(p);
+      }
+    },
+    onError: () => toast('Payment could not be completed. Please try again.', 'error'),
+  });
+
+  if (ppButtons.isEligible()) {
+    ppButtons.render('#paypal-button-container');
+  } else {
+    document.getElementById('paypal-button-container').innerHTML =
+      '<p style="font-size:13px;color:var(--text-muted);">Contact us: collect@flawedframe.com</p>';
+  }
+}
+
+async function recordOrder(p, capture) {
+  const year = new Date().getFullYear();
+  const num = `FF-${year}-${String(Math.floor(1000 + Math.random() * 9000))}`;
+  const copy = p.sold_count + 1;
+
+  const { data: order, error } = await sb.from('orders').insert({
+    order_number: num,
+    user_id: user.id,
+    piece_id: p.id,
+    piece_title: p.title,
+    edition_label: p.edition_label,
+    copy_number: copy,
+    price: p.price,
+    paypal_order_id: capture.id,
+    paypal_capture_id: capture.purchase_units?.[0]?.payments?.captures?.[0]?.id ?? null,
+    status: 'being_prepared'
+  }).select().single();
+
+  if (error) {
+    localStorage.setItem('ff_backup', JSON.stringify({ num, capture, pieceTitle: p.title, editionLabel: p.edition_label, copy, price: p.price }));
+    window.location.href = `order-confirmation.html?backup=1&num=${encodeURIComponent(num)}`;
+    return;
+  }
+
+  await sb.from('pieces').update({
+    sold_count: copy,
+    status: copy >= p.edition_total ? 'sold' : 'available'
+  }).eq('id', p.id);
+
+  window.location.href = `order-confirmation.html?order=${order.id}`;
+}
+
+function triggerSignIn(slug) {
+  sessionStorage.setItem('ff_pending', slug);
+  closePieceModal();
+  openAuthModal();
+}
+
+function openAuthModal() {
+  document.getElementById('auth-backdrop').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeAuthModal() {
+  document.getElementById('auth-backdrop').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+async function signInWithGoogle() {
+  const btn = document.getElementById('btn-google');
+  btn.textContent = 'Redirecting…';
+  btn.disabled = true;
+  const { error } = await sb.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: window.location.href }
+  });
+  if (error) {
+    toast('Sign-in failed. Please try again.', 'error');
+    btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.875 2.684-6.615z" fill="#4285F4"/><path d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 009 18z" fill="#34A853"/><path d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 000 9c0 1.452.348 2.827.957 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 00.957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z" fill="#EA4335"/></svg> Continue with Google`;
+    btn.disabled = false;
+  }
+}
+
+async function signOut() { await sb.auth.signOut(); }
+
+function checkPending() {
+  if (!user) return;
+  const slug = sessionStorage.getItem('ff_pending');
+  if (!slug) return;
+  const p = pieces.find(x => x.slug === slug);
+  if (p) { sessionStorage.removeItem('ff_pending'); setTimeout(() => openPieceModal(p), 300); }
+}
+
+function handleBackdropClick(e, id) {
+  if (e.target.id === id) {
+    if (id === 'piece-backdrop') closePieceModal();
+    else closeAuthModal();
+  }
+}
+
+function toast(msg, type) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `toast show ${type}`;
+  clearTimeout(toastTmr);
+  toastTmr = setTimeout(() => { el.className = 'toast'; }, 3500);
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  closePieceModal();
+  closeAuthModal();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flawed Frame — My Collection</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Outfit:wght@300;400;500&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="ff.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <style>
+    main { padding-top: 72px; }
+
+    .page-header {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 72px 48px 56px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .page-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+
+    .page-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(48px, 6vw, 72px);
+      font-weight: 300;
+      line-height: 0.95;
+    }
+
+    .collector-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 22px;
+      color: var(--text-muted);
+      margin-top: 12px;
+    }
+
+    /* METRICS */
+    .metrics {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .metric {
+      padding: 40px 48px;
+      border-right: 1px solid var(--border);
+    }
+
+    .metric:last-child { border-right: none; }
+
+    .metric-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 52px;
+      font-weight: 300;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .metric-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* COLLECTION */
+    .section-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 48px;
+    }
+
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 28px;
+    }
+
+    .orders-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      background: var(--border);
+    }
+
+    .order-row {
+      background: var(--bg);
+      padding: 28px 32px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px;
+      align-items: start;
+      transition: background 0.18s;
+    }
+
+    .order-row:hover { background: var(--surface); }
+
+    .order-left {}
+
+    .order-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-weight: 400;
+      margin-bottom: 4px;
+    }
+
+    .order-meta {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+    }
+
+    .order-meta span + span::before {
+      content: ' · ';
+    }
+
+    /* STATUS TRACK */
+    .status-track {
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    .track-step {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .track-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: transparent;
+      flex-shrink: 0;
+    }
+
+    .track-dot.done {
+      background: var(--gold);
+      border-color: var(--gold);
+    }
+
+    .track-dot.active {
+      background: transparent;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 2px rgba(201,168,76,0.2);
+    }
+
+    .track-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+    }
+
+    .track-label.done { color: var(--text); }
+    .track-label.active { color: var(--gold); }
+
+    .track-line {
+      width: 28px;
+      height: 1px;
+      background: var(--border);
+      margin: 0 4px;
+    }
+
+    .track-line.done { background: var(--gold); opacity: 0.4; }
+
+    /* ORDER RIGHT */
+    .order-right {
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .order-price {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 28px;
+      font-weight: 300;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+
+    .order-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .btn-cert {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 7px 14px;
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+
+    .btn-cert:hover {
+      border-color: rgba(255,255,255,0.18);
+      color: var(--text);
+    }
+
+    /* EMPTY STATE */
+    .empty-state {
+      padding: 72px 32px;
+      text-align: center;
+      border: 1px solid var(--border);
+    }
+
+    .empty-heading {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 28px;
+      font-weight: 300;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .empty-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+      opacity: 0.6;
+      margin-bottom: 28px;
+    }
+
+    /* CERTIFICATE MODAL */
+    .cert-modal {
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .cert-body {
+      padding: 52px;
+      text-align: center;
+    }
+
+    .cert-border {
+      border: 1px solid var(--gold-border);
+      padding: 48px 40px;
+    }
+
+    .cert-eyebrow {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 28px;
+    }
+
+    .cert-main-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 40px;
+      font-weight: 300;
+      margin-bottom: 4px;
+    }
+
+    .cert-edition {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+    }
+
+    .cert-divider {
+      height: 1px;
+      background: var(--gold-border);
+      opacity: 0.5;
+      margin: 24px 0;
+    }
+
+    .cert-inscription {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 18px;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+    }
+
+    .cert-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      text-align: left;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+    }
+
+    .cert-meta-item {}
+
+    .cert-meta-key {
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .cert-meta-val { color: var(--text); }
+
+    .cert-logo {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 14px;
+      color: var(--gold);
+      letter-spacing: 0.06em;
+      margin-top: 32px;
+    }
+
+    .cert-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 28px;
+    }
+
+    @media print {
+      nav, .cert-actions, .modal-close { display: none !important; }
+      .modal-backdrop { position: static; background: none; opacity: 1; visibility: visible; }
+      .modal-panel { border: none; transform: none; max-height: none; }
+    }
+
+    @media (max-width: 768px) {
+      .metrics { grid-template-columns: 1fr 1fr; }
+      .metric:nth-child(2) { border-right: none; }
+      .metric:nth-child(3) { border-top: 1px solid var(--border); grid-column: 1/-1; }
+      .order-row { grid-template-columns: 1fr; }
+      .order-right { text-align: left; }
+      .section-wrap { padding: 48px 20px; }
+      .page-header { padding: 52px 20px 40px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <div class="nav-mark">FF</div>
+    <span class="nav-wordmark">Flawed Frame</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html">Gallery</a></li>
+    <li><a href="archive.html">Archive</a></li>
+    <li><a href="account.html" class="active">My Collection</a></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="btn-nav" onclick="signOut()">Sign Out</button>
+  </div>
+</nav>
+
+<main>
+  <div id="page-content">
+    <div style="padding:120px 48px;text-align:center;">
+      <div class="shimmer" style="width:200px;height:60px;margin:0 auto 16px;"></div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-left">
+      <span class="nav-wordmark" style="color:var(--gold)">FLAWED FRAME</span>
+      <span class="footer-tagline">Imperfection. Preserved.</span>
+    </div>
+    <ul class="footer-links">
+      <li><a href="index.html">Gallery</a></li>
+      <li><a href="archive.html">Archive</a></li>
+      <li><a href="mailto:collect@flawedframe.com">Contact</a></li>
+    </ul>
+    <span class="footer-copy">© 2025 Flawed Frame</span>
+  </footer>
+</main>
+
+<!-- CERTIFICATE MODAL -->
+<div class="modal-backdrop" id="cert-backdrop" onclick="if(event.target.id==='cert-backdrop') closeCert()">
+  <div class="modal-panel cert-modal" id="cert-modal">
+    <button class="modal-close" onclick="closeCert()">✕</button>
+    <div class="cert-body">
+      <div class="cert-border">
+        <p class="cert-eyebrow">Certificate of Authenticity</p>
+        <h2 class="cert-main-title" id="cert-title"></h2>
+        <p class="cert-edition" id="cert-edition"></p>
+        <p class="cert-inscription" id="cert-inscription"></p>
+        <div class="cert-divider"></div>
+        <div class="cert-meta">
+          <div class="cert-meta-item">
+            <div class="cert-meta-key">Collector</div>
+            <div class="cert-meta-val" id="cert-collector"></div>
+          </div>
+          <div class="cert-meta-item">
+            <div class="cert-meta-key">Order</div>
+            <div class="cert-meta-val" id="cert-order-num"></div>
+          </div>
+          <div class="cert-meta-item">
+            <div class="cert-meta-key">Acquired</div>
+            <div class="cert-meta-val" id="cert-date"></div>
+          </div>
+          <div class="cert-meta-item">
+            <div class="cert-meta-key">Copy</div>
+            <div class="cert-meta-val" id="cert-copy"></div>
+          </div>
+        </div>
+        <p class="cert-logo">Flawed Frame</p>
+      </div>
+      <div class="cert-actions">
+        <button class="btn-primary" onclick="window.print()">Print Certificate</button>
+        <button class="btn-secondary" onclick="closeCert()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SB_URL = 'https://utrrfwdtoacefmgodilg.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV0cnJmd2R0b2FjZWZtZ29kaWxnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0NTYzOTMsImV4cCI6MjA5NjAzMjM5M30.l5AmhWcPtMINCePhAfKcgcFLIsG7wWB2cDgQzNHRDPw';
+const sb = supabase.createClient(SB_URL, SB_KEY);
+
+let user = null;
+let profile = null;
+let orders = [];
+let toastTmr;
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const { data: { session } } = await sb.auth.getSession();
+  user = session?.user ?? null;
+
+  if (!user) {
+    window.location.href = 'index.html';
+    return;
+  }
+
+  await Promise.all([loadProfile(), loadOrders()]);
+  render();
+});
+
+async function loadProfile() {
+  const { data } = await sb.from('profiles').select('*').eq('id', user.id).single();
+  profile = data;
+}
+
+async function loadOrders() {
+  const { data } = await sb.from('orders')
+    .select('*, pieces(title, inscription)')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false });
+  if (data) orders = data;
+}
+
+function render() {
+  const displayName = profile?.display_name || user.user_metadata?.full_name || user.email;
+  const memberSince = profile?.member_since
+    ? new Date(profile.member_since).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+    : new Date(user.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  const totalSpent = orders.reduce((sum, o) => sum + Number(o.price), 0);
+  const certCount = orders.filter(o => o.status === 'being_prepared' || o.status === 'shipped' || o.status === 'delivered').length;
+
+  document.getElementById('page-content').innerHTML = `
+    <div class="page-header">
+      <p class="page-eyebrow">Collector Account</p>
+      <h1 class="page-heading">My Collection</h1>
+      <p class="collector-name">${displayName} · Member since ${memberSince}</p>
+    </div>
+
+    <div class="metrics">
+      <div class="metric">
+        <div class="metric-num">${orders.length}</div>
+        <div class="metric-label">Pieces acquired</div>
+      </div>
+      <div class="metric">
+        <div class="metric-num">$${totalSpent.toLocaleString()}</div>
+        <div class="metric-label">Total invested</div>
+      </div>
+      <div class="metric">
+        <div class="metric-num">${certCount}</div>
+        <div class="metric-label">Certificates</div>
+      </div>
+    </div>
+
+    <div class="section-wrap">
+      <p class="section-label">Your Acquisitions</p>
+      ${orders.length === 0 ? renderEmpty() : `
+        <div class="orders-list">
+          ${orders.map(renderOrder).join('')}
+        </div>
+      `}
+    </div>
+  `;
+}
+
+function renderEmpty() {
+  return `
+    <div class="empty-state">
+      <p class="empty-heading">No pieces yet.</p>
+      <p class="empty-sub">Your collection is waiting to begin.</p>
+      <a href="index.html" class="btn-primary">Browse the Gallery</a>
+    </div>
+  `;
+}
+
+function renderOrder(o) {
+  const status = o.status;
+  const steps = ['being_prepared', 'shipped', 'delivered'];
+  const labels = ['Being Prepared', 'Shipped', 'Delivered'];
+  const activeIdx = steps.indexOf(status);
+
+  const track = labels.map((lbl, i) => {
+    const done = i < activeIdx;
+    const active = i === activeIdx;
+    const line = i < labels.length - 1
+      ? `<div class="track-line${done ? ' done' : ''}"></div>` : '';
+    return `
+      <div class="track-step">
+        <div class="track-dot${done ? ' done' : active ? ' active' : ''}"></div>
+        <span class="track-label${done ? ' done' : active ? ' active' : ''}">${lbl}</span>
+      </div>${line}`;
+  }).join('');
+
+  const date = new Date(o.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  const inscription = o.pieces?.inscription ? `"${o.pieces.inscription}"` : '';
+
+  return `
+    <div class="order-row">
+      <div class="order-left">
+        <h3 class="order-title">${o.piece_title}</h3>
+        <p class="order-meta">
+          <span>${o.edition_label}</span>
+          <span>Copy ${o.copy_number}</span>
+          <span>${date}</span>
+        </p>
+        ${inscription ? `<p style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:14px;color:var(--text-muted);margin-bottom:16px;">${inscription}</p>` : ''}
+        <div class="status-track">
+          <div class="track-step">
+            <div class="track-dot done"></div>
+            <span class="track-label done">Confirmed</span>
+          </div>
+          <div class="track-line done"></div>
+          ${track}
+        </div>
+      </div>
+      <div class="order-right">
+        <div class="order-price">$${Number(o.price).toLocaleString()}</div>
+        <div class="order-num">${o.order_number}</div>
+        <button class="btn-cert" onclick="openCert('${o.id}')">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><rect x="1" y="1" width="8" height="8" stroke="currentColor" stroke-width="1"/><line x1="3" y1="4" x2="7" y2="4" stroke="currentColor"/><line x1="3" y1="6" x2="7" y2="6" stroke="currentColor"/></svg>
+          Certificate
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+function openCert(orderId) {
+  const o = orders.find(x => x.id === orderId);
+  if (!o) return;
+
+  const displayName = profile?.display_name || user.user_metadata?.full_name || user.email;
+  const date = new Date(o.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+  document.getElementById('cert-title').textContent = o.piece_title;
+  document.getElementById('cert-edition').textContent = `${o.edition_label} · Copy ${o.copy_number}`;
+  document.getElementById('cert-inscription').textContent = o.pieces?.inscription ? `"${o.pieces.inscription}"` : '';
+  document.getElementById('cert-collector').textContent = displayName;
+  document.getElementById('cert-order-num').textContent = o.order_number;
+  document.getElementById('cert-date').textContent = date;
+  document.getElementById('cert-copy').textContent = `${o.copy_number} of ${o.edition_label.match(/\d+/)?.[0] || '—'}`;
+
+  document.getElementById('cert-backdrop').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeCert() {
+  document.getElementById('cert-backdrop').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+async function signOut() {
+  await sb.auth.signOut();
+  window.location.href = 'index.html';
+}
+
+function toast(msg, type) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = `toast show ${type}`;
+  clearTimeout(toastTmr);
+  toastTmr = setTimeout(() => { el.className = 'toast'; }, 3500);
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeCert();
+});
+</script>
+</body>
+</html>
